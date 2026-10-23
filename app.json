@@ -37,6 +37,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d6baf5c1-539b-4386-9426-83e801823ffb"
+      }
+    },
+    "owner": "honestudio"
   }
 }
