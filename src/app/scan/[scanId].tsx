@@ -3,8 +3,11 @@ import { Button, Platform, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Scan } from "@/models/Scan";
 import SaveScanButton from "@/components/SaveScanButton";
+import { useSQLiteContext } from "expo-sqlite";
+import { saveScan } from "@/repositories/scanRepository";
 
 export default function ScanDetailScreen() {
+  const database = useSQLiteContext();
   const { scanId, value, barcodeType } = useLocalSearchParams<{
     scanId: string;
     value?: string;
@@ -24,6 +27,13 @@ export default function ScanDetailScreen() {
     } else {
       router.replace("/");
     }
+  };
+
+  const handleSaveScan = async () => {
+    if (!scan) return;
+
+    await saveScan(database, scan);
+    router.dismissTo("/history");
   };
 
   return (
@@ -76,7 +86,7 @@ export default function ScanDetailScreen() {
             paddingRight: insets.right + 24,
           }}
         >
-          <SaveScanButton />
+          <SaveScanButton onSave={handleSaveScan} />
         </View>
       )}
     </View>

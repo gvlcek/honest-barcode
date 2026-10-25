@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import "../../global.css";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import { SQLiteProvider } from "expo-sqlite";
+import { initializeDatabase } from "@/database/database";
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -24,13 +26,27 @@ export default function RootLayout() {
   }
 
   return (
+  <SQLiteProvider
+    databaseName="honest-barcode.db"
+    onInit={initializeDatabase}
+  >
     <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="scanner" options={{ presentation: "fullScreenModal", title: "", }}/>
+      <Stack.Screen
+        name="(tabs)"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="scanner"
+        options={{ presentation: "fullScreenModal", title: "" }}
+      />
       <Stack.Screen
         name="scan/[scanId]"
-        options={{ title: "", headerBackButtonDisplayMode: "minimal" }}
+        options={{
+          title: "",
+          headerBackButtonDisplayMode: "minimal",
+        }}
       />
     </Stack>
-  );
+  </SQLiteProvider>
+);
 }
