@@ -69,6 +69,38 @@
     @apply flex-1 bg-black;
   }
 
+  .scanner-guide {
+    @apply absolute inset-0 items-center justify-center gap-6 px-8;
+  }
+
+  .scanner-guide-frame {
+    @apply relative size-72;
+  }
+
+  .scanner-guide-corner {
+    @apply absolute size-10 border-white;
+  }
+
+  .scanner-guide-top-left {
+    @apply left-0 top-0 rounded-tl-2xl border-l-4 border-t-4;
+  }
+
+  .scanner-guide-top-right {
+    @apply right-0 top-0 rounded-tr-2xl border-r-4 border-t-4;
+  }
+
+  .scanner-guide-bottom-left {
+    @apply bottom-0 left-0 rounded-bl-2xl border-b-4 border-l-4;
+  }
+
+  .scanner-guide-bottom-right {
+    @apply bottom-0 right-0 rounded-br-2xl border-b-4 border-r-4;
+  }
+
+  .scanner-guide-hint {
+    @apply max-w-72 rounded-2xl bg-black/70 px-4 py-3 text-center font-sans-medium text-base text-white;
+  }
+
   .scanner-permission-title {
     @apply text-center font-sans-bold text-xl text-foreground;
   }

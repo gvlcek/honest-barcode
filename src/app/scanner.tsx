@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, AppState, Button, Linking, Text, View } from "react-native";
 import { router, Stack, useFocusEffect } from "expo-router";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import ScannerGuide from "@/components/ScannerGuide";
 
 const ScannerScreen = () => {
     const [permission, requestPermission, getPermission] = useCameraPermissions();
@@ -74,6 +75,7 @@ const ScannerScreen = () => {
         <>
         <Stack.Screen
             options={{
+            headerBackVisible: false,
             headerRight: () => (
                 <Button title="Close" onPress={() => router.back()} />
             ),
@@ -93,6 +95,7 @@ const ScannerScreen = () => {
                         {cameraError}
                     </Text>
                 ) : isScreenFocused && isAppActive ? (
+                    <>
                     <CameraView
                         style={{ flex: 1 }}
                         facing="back"
@@ -100,6 +103,8 @@ const ScannerScreen = () => {
                             setCameraError("Unable to start the camera. Please close the scanner and try again on a physical device.");
                         }}
                     />
+                    <ScannerGuide />
+                    </>
                 ) : null
             ) : (
                 <>
