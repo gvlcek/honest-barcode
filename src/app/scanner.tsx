@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, AppState, Button, Linking, Text, View } from "react-native";
+import { ActivityIndicator, Alert, AppState, Button, Linking, Text, View } from "react-native";
 import { router, Stack, useFocusEffect } from "expo-router";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import ScannerGuide from "@/components/ScannerGuide";
+import type { BarcodeScanningResult } from "expo-camera";
+import type { Scan } from "@/models/Scan";
 
 const ScannerScreen = () => {
     const [permission, requestPermission, getPermission] = useCameraPermissions();
@@ -10,9 +12,11 @@ const ScannerScreen = () => {
     const [permissionError, setPermissionError] = useState<string | null>(null);
     const [cameraError, setCameraError] = useState<string | null>(null);
     const [isScreenFocused, setIsScreenFocused] = useState(false);
+    const [isScanPaused, setIsScanPaused] = useState(false);
     const [isAppActive, setIsAppActive] = useState(AppState.currentState === "active");
     const didAutoRequest = useRef(false);
     const requestInFlight = useRef(false);
+    const hasScanned = useRef(false);
 
     useFocusEffect(useCallback(() => {
         setIsScreenFocused(true);
@@ -71,6 +75,35 @@ const ScannerScreen = () => {
         }
     };
 
+    const handleBarcodeScanned = (result: BarcodeScanningResult) => {
+        if (hasScanned.current || !isScreenFocused || !isAppActive) return;
+
+        hasScanned.current = true;
+        setIsScanPaused(true);
+
+        const scan: Scan = {
+            value: result.data,
+            type: result.type,
+            scannedAt: new Date(),
+        };
+
+        Alert.alert(
+            "Code scanned",
+            `Content: ${scan.value}\n\nFormat: ${scan.type}\n\nScanned at: ${scan.scannedAt.toLocaleString()}`,
+            [
+                { text: "Close", style: "cancel", onPress: () => router.back() },
+                {
+                    text: "Scan again",
+                    onPress: () => {
+                        hasScanned.current = false;
+                        setIsScanPaused(false);
+                    },
+                },
+            ],
+            { cancelable: false },
+        );
+    };
+
     return (
         <>
         <Stack.Screen
@@ -99,6 +132,7 @@ const ScannerScreen = () => {
                     <CameraView
                         style={{ flex: 1 }}
                         facing="back"
+                        onBarcodeScanned={isScanPaused ? undefined : handleBarcodeScanned}
                         onMountError={() => {
                             setCameraError("Unable to start the camera. Please close the scanner and try again on a physical device.");
                         }}

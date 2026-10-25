@@ -112,4 +112,20 @@
   .scanner-permission-error {
     @apply text-center font-sans text-sm text-destructive;
   }
+
+  .scan-detail-screen {
+    @apply flex-1 bg-background;
+  }
+
+  .scan-detail-card {
+    @apply gap-3 rounded-2xl bg-card p-6;
+  }
+
+  .scan-detail-label {
+    @apply font-sans-medium text-sm text-muted-foreground;
+  }
+
+  .scan-detail-value {
+    @apply font-sans text-lg text-foreground;
+  }
 }
