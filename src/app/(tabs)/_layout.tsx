@@ -10,6 +10,7 @@ export default function TabsLayout() {
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="barcode-outline" size={size} color={color} />
           ),
+        headerShown: false
       }} />
       <Tabs.Screen name="history" options={{
         title: "History",

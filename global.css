@@ -23,3 +23,41 @@
   --font-sans-bold: sans-bold;
   --font-sans-extrabold: sans-extrabold;
 }
+
+@layer components {
+  .scan-screen {
+    @apply flex-1 bg-accent;
+  }
+
+  .scan-header {
+    @apply flex-row items-center gap-4 pb-10;
+  }
+
+  .scan-logo-placeholder {
+    @apply size-20 shrink-0 rounded-2xl bg-white/20;
+  }
+
+  .scan-header-copy {
+    @apply flex-1 gap-1;
+  }
+
+  .scan-greeting {
+    @apply font-sans-medium text-lg text-white;
+  }
+
+  .scan-title {
+    @apply font-sans-bold text-3xl text-white;
+  }
+
+  .scan-body {
+    @apply flex-1 items-center justify-center rounded-t-3xl bg-background px-6 py-8;
+  }
+
+  .scan-button {
+    @apply size-40 items-center justify-center rounded-2xl bg-primary p-4;
+  }
+
+  .scan-button-label {
+    @apply text-center font-sans-semibold text-lg text-white;
+  }
+}
