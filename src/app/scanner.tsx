@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, AppState, Button, Linking, Text, View } from "react-native";
+import { ActivityIndicator, AppState, Button, Linking, Text, View } from "react-native";
 import { router, Stack, useFocusEffect } from "expo-router";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import ScannerGuide from "@/components/ScannerGuide";
@@ -87,21 +87,14 @@ const ScannerScreen = () => {
             scannedAt: new Date(),
         };
 
-        Alert.alert(
-            "Code scanned",
-            `Content: ${scan.value}\n\nFormat: ${scan.type}\n\nScanned at: ${scan.scannedAt.toLocaleString()}`,
-            [
-                { text: "Close", style: "cancel", onPress: () => router.back() },
-                {
-                    text: "Scan again",
-                    onPress: () => {
-                        hasScanned.current = false;
-                        setIsScanPaused(false);
-                    },
-                },
-            ],
-            { cancelable: false },
-        );
+        router.replace({
+            pathname: "/scan/[scanId]",
+            params: {
+                scanId: scan.scannedAt.toISOString(),
+                value: scan.value,
+                barcodeType: scan.type,
+            },
+        });
     };
 
     return (

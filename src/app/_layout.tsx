@@ -27,7 +27,10 @@ export default function RootLayout() {
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="scanner" options={{ presentation: "fullScreenModal", title: "", }}/>
-      <Stack.Screen name="scan/[scanId]" options={{ title: "Scan details" }} />
+      <Stack.Screen
+        name="scan/[scanId]"
+        options={{ title: "", headerBackButtonDisplayMode: "minimal" }}
+      />
     </Stack>
   );
 }

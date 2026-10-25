@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Button, ScrollView, Text, View } from "react-native";
+import { Button, Platform, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Scan } from "@/models/Scan";
 
@@ -28,11 +28,13 @@ export default function ScanDetailScreen() {
   return (
     <ScrollView
       className="scan-detail-screen"
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={{
         paddingTop: 24,
-        paddingBottom: insets.bottom + 24,
-        paddingLeft: insets.left + 24,
-        paddingRight: insets.right + 24,
+        // iOS adjusts for the native header and safe area automatically.
+        paddingBottom: 24 + (Platform.OS === "ios" ? 0 : insets.bottom),
+        paddingLeft: 24 + (Platform.OS === "ios" ? 0 : insets.left),
+        paddingRight: 24 + (Platform.OS === "ios" ? 0 : insets.right),
         gap: 24,
       }}
     >
