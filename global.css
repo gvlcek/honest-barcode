@@ -137,8 +137,13 @@
     @apply min-h-16 items-center justify-center rounded-2xl bg-accent px-6 py-4;
   }
 
-  .scan-save-button-label {
+  .scan-save-button-label,
+  .scan-delete-button-label {
     @apply text-center font-sans-semibold text-xl text-white;
+  }
+
+  .scan-delete-button {
+    @apply min-h-16 items-center justify-center rounded-2xl bg-destructive px-6 py-4;
   }
 
   .history-screen {

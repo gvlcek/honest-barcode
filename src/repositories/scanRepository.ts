@@ -47,3 +47,10 @@ export async function saveScan(
     scan.type
   );
 }
+
+export async function deleteScan(
+  database: SQLiteDatabase,
+  scanId: string
+): Promise<void> {
+  await database.runAsync("DELETE FROM scans WHERE scanned_at = ?", scanId);
+}

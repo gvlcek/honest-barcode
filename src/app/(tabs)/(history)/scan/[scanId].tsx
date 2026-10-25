@@ -4,8 +4,9 @@ import { ActivityIndicator, Button, Platform, ScrollView, Text, View } from "rea
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Scan } from "@/models/Scan";
 import SaveScanButton from "@/components/SaveScanButton";
+import DeleteScanButton from "@/components/DeleteScanButton";
 import { useSQLiteContext } from "expo-sqlite";
-import { getScan, saveScan } from "@/repositories/scanRepository";
+import { deleteScan, getScan, saveScan } from "@/repositories/scanRepository";
 
 export default function ScanDetailScreen() {
   const database = useSQLiteContext();
@@ -69,6 +70,13 @@ export default function ScanDetailScreen() {
     router.dismissTo("/history");
   };
 
+  const handleDeleteScan = async () => {
+    if (!scan || isDraft) return;
+
+    await deleteScan(database, scan.scannedAt.toISOString());
+    router.dismissTo("/history");
+  };
+
   return (
     <View className="scan-detail-screen">
       <ScrollView
@@ -117,17 +125,21 @@ export default function ScanDetailScreen() {
           </>
         )}
       </ScrollView>
-      {scan && isDraft && (
+      {scan && (
         <View
           className="scan-detail-actions"
           style={{
             paddingTop: 16,
-            paddingBottom: insets.bottom + 16,
+            paddingBottom: 16,
             paddingLeft: insets.left + 24,
             paddingRight: insets.right + 24,
           }}
         >
-          <SaveScanButton onSave={handleSaveScan} />
+          {isDraft ? (
+            <SaveScanButton onSave={handleSaveScan} />
+          ) : (
+            <DeleteScanButton onDelete={handleDeleteScan} />
+          )}
         </View>
       )}
     </View>
