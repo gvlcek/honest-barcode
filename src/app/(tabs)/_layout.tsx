@@ -4,7 +4,6 @@ import { Ionicons } from "@react-native-vector-icons/ionicons";
 export default function TabsLayout() {
   return (
     <Tabs>
-
       <Tabs.Screen name="index" options={{
         title: "Scan",
         tabBarIcon: ({ color, size }) => (

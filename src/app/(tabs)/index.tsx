@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 export default function App() {
   const insets = useSafeAreaInsets();
@@ -29,6 +30,7 @@ export default function App() {
           className="scan-button"
           accessibilityRole="button"
           style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
+          onPress={() => router.push("/scanner")}
         >
           <Text className="scan-button-label">Start scanning</Text>
         </Pressable>
