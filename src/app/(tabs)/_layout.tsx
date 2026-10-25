@@ -11,8 +11,9 @@ export default function TabsLayout() {
           ),
         headerShown: false
       }} />
-      <Tabs.Screen name="history" options={{
+      <Tabs.Screen name="(history)" options={{
         title: "History",
+        headerShown: false,
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="library-outline" size={size} color={color} />
           ),

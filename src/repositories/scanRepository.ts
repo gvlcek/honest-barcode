@@ -7,6 +7,22 @@ interface ScanRow {
   type: string;
 }
 
+export async function getScan(
+  database: SQLiteDatabase,
+  scanId: string
+): Promise<Scan | null> {
+  const row = await database.getFirstAsync<ScanRow>(
+    "SELECT scanned_at, value, type FROM scans WHERE scanned_at = ?",
+    scanId
+  );
+
+  return row ? {
+    value: row.value,
+    type: row.type,
+    scannedAt: new Date(row.scanned_at),
+  } : null;
+}
+
 export async function getScans(database: SQLiteDatabase): Promise<Scan[]> {
   const rows = await database.getAllAsync<ScanRow>(
     "SELECT scanned_at, value, type FROM scans ORDER BY scanned_at DESC"

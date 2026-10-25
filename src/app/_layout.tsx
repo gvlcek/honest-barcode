@@ -39,13 +39,6 @@ export default function RootLayout() {
         name="scanner"
         options={{ presentation: "fullScreenModal", title: "" }}
       />
-      <Stack.Screen
-        name="scan/[scanId]"
-        options={{
-          title: "",
-          headerBackButtonDisplayMode: "minimal",
-        }}
-      />
     </Stack>
   </SQLiteProvider>
 );

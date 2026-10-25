@@ -94,7 +94,7 @@ const ScannerScreen = () => {
                 value: scan.value,
                 barcodeType: scan.type,
             },
-        });
+        }, { withAnchor: true });
     };
 
     return (

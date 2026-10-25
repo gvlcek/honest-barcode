@@ -1,10 +1,11 @@
+import { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { Button, Platform, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Button, Platform, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Scan } from "@/models/Scan";
 import SaveScanButton from "@/components/SaveScanButton";
 import { useSQLiteContext } from "expo-sqlite";
-import { saveScan } from "@/repositories/scanRepository";
+import { getScan, saveScan } from "@/repositories/scanRepository";
 
 export default function ScanDetailScreen() {
   const database = useSQLiteContext();
@@ -14,12 +15,44 @@ export default function ScanDetailScreen() {
     barcodeType?: string;
   }>();
   const insets = useSafeAreaInsets();
+  const isDraft = value !== undefined || barcodeType !== undefined;
+  const [savedResult, setSavedResult] = useState<{
+    id: string;
+    scan: Scan | null;
+    error: string | null;
+  } | null>(null);
+  const isLoading = !isDraft && savedResult?.id !== scanId;
+
+  useEffect(() => {
+    if (isDraft) return;
+    let isActive = true;
+
+    const loadScan = async () => {
+      try {
+        const savedScan = await getScan(database, scanId);
+        if (isActive) setSavedResult({ id: scanId, scan: savedScan, error: null });
+      } catch {
+        if (isActive) {
+          setSavedResult({
+            id: scanId,
+            scan: null,
+            error: "Unable to load this scan. Please return to History and try again.",
+          });
+        }
+      }
+    };
+
+    void loadScan();
+    return () => { isActive = false; };
+  }, [database, scanId, isDraft]);
+
   const scannedAt = typeof scanId === "string" ? new Date(scanId) : null;
-  const scan: Scan | null =
+  const draftScan: Scan | null =
     scannedAt && !Number.isNaN(scannedAt.getTime()) &&
     typeof value === "string" && typeof barcodeType === "string"
       ? { value, type: barcodeType, scannedAt }
       : null;
+  const scan = isDraft ? draftScan : savedResult?.id === scanId ? savedResult.scan : null;
 
   const closeDetails = () => {
     if (router.canGoBack()) {
@@ -30,7 +63,7 @@ export default function ScanDetailScreen() {
   };
 
   const handleSaveScan = async () => {
-    if (!scan) return;
+    if (!scan || !isDraft) return;
 
     await saveScan(database, scan);
     router.dismissTo("/history");
@@ -50,7 +83,9 @@ export default function ScanDetailScreen() {
           gap: 24,
         }}
       >
-        {scan ? (
+        {isLoading ? (
+          <ActivityIndicator accessibilityLabel="Loading scan details" />
+        ) : scan ? (
           <>
             <View className="scan-detail-card">
               <Text className="scan-detail-label">Content</Text>
@@ -62,21 +97,27 @@ export default function ScanDetailScreen() {
                 {scan.scannedAt.toLocaleString()}
               </Text>
             </View>
-            <Text className="scan-detail-label">
-              This scan has not been saved to history.
-            </Text>
-            <Button title="Discard" color="#ff383c" onPress={closeDetails} />
+            {isDraft && (
+              <>
+                <Text className="scan-detail-label">
+                  This scan has not been saved to history.
+                </Text>
+                <Button title="Discard" color="#ff383c" onPress={closeDetails} />
+              </>
+            )}
           </>
         ) : (
           <>
             <Text accessibilityRole="alert" className="scan-detail-value">
-              Scan details are unavailable. Please scan the code again.
+              {isDraft
+                ? "Scan details are unavailable. Please scan the code again."
+                : savedResult?.error ?? "This scan could not be found in history."}
             </Text>
-            <Button title="Back to scanning" onPress={closeDetails} />
+            <Button title="Go back" onPress={closeDetails} />
           </>
         )}
       </ScrollView>
-      {scan && (
+      {scan && isDraft && (
         <View
           className="scan-detail-actions"
           style={{

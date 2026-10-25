@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import { ActivityIndicator, FlatList, Text } from "react-native";
-import { useFocusEffect } from "expo-router";
+import { ActivityIndicator, FlatList, Pressable, Text } from "react-native";
+import { Link, useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import type { Scan } from "@/models/Scan";
 import { getScans } from "@/repositories/scanRepository";
@@ -42,7 +42,21 @@ export default function HistoryScreen() {
       data={scans}
       keyExtractor={(scan) => scan.scannedAt.toISOString()}
       renderItem={({ item }) => (
-        <Text selectable className="history-value">{item.value}</Text>
+        <Link
+          href={{
+            pathname: "/scan/[scanId]",
+            params: { scanId: item.scannedAt.toISOString() },
+          }}
+          asChild
+          withAnchor
+        >
+          <Pressable
+            accessibilityRole="link"
+            style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+          >
+            <Text className="history-value">{item.value}</Text>
+          </Pressable>
+        </Link>
       )}
       ListEmptyComponent={isLoading ? (
         <ActivityIndicator accessibilityLabel="Loading history" />
