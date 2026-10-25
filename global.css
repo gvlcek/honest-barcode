@@ -128,4 +128,16 @@
   .scan-detail-value {
     @apply font-sans text-lg text-foreground;
   }
+
+  .scan-detail-actions {
+    @apply shrink-0 bg-background;
+  }
+
+  .scan-save-button {
+    @apply min-h-16 items-center justify-center rounded-2xl bg-accent px-6 py-4;
+  }
+
+  .scan-save-button-label {
+    @apply text-center font-sans-semibold text-xl text-white;
+  }
 }
