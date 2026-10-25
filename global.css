@@ -60,4 +60,24 @@
   .scan-button-label {
     @apply text-center font-sans-semibold text-lg text-white;
   }
+
+  .scanner-permission-screen {
+    @apply flex-1 items-center justify-center gap-4 bg-background px-6 py-8;
+  }
+
+  .scanner-preview-screen {
+    @apply flex-1 bg-black;
+  }
+
+  .scanner-permission-title {
+    @apply text-center font-sans-bold text-xl text-foreground;
+  }
+
+  .scanner-permission-message {
+    @apply text-center font-sans text-base text-foreground;
+  }
+
+  .scanner-permission-error {
+    @apply text-center font-sans text-sm text-destructive;
+  }
 }
