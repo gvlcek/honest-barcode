@@ -8,6 +8,10 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
 import { useDeviceLanguage } from "@/hooks/useDeviceLanguage";
 
+export const unstable_settings = {
+  anchor: "(tabs)",
+};
+
 export default function RootLayout() {
   useDeviceLanguage();
   const [fontsLoaded, fontError] = useFonts({
@@ -42,7 +46,7 @@ export default function RootLayout() {
       />
       <Stack.Screen
         name="scanner"
-        options={{ presentation: "fullScreenModal", title: "" }}
+        options={{ presentation: "fullScreenModal", headerShown: false }}
       />
     </Stack>
   </SQLiteProvider>

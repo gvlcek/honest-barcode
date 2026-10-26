@@ -23,8 +23,14 @@ const ScannerScreen = () => {
     const hasScanned = useRef(false);
 
     useFocusEffect(useCallback(() => {
+        // A new reading session begins when returning from the draft detail.
+        hasScanned.current = false;
+        setIsScanPaused(false);
         setIsScreenFocused(true);
-        return () => setIsScreenFocused(false);
+        return () => {
+            hasScanned.current = true;
+            setIsScreenFocused(false);
+        };
     }, []));
 
     const askForPermission = useCallback(async () => {
@@ -91,14 +97,14 @@ const ScannerScreen = () => {
             scannedAt: new Date(),
         };
 
-        router.replace({
-            pathname: "/scan/[scanId]",
+        router.push({
+            pathname: "/scanner/scan/[scanId]",
             params: {
                 scanId: scan.scannedAt.toISOString(),
                 value: scan.value,
                 barcodeType: scan.type,
             },
-        }, { withAnchor: true });
+        });
     };
 
     return (
