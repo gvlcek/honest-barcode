@@ -1,24 +1,33 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useTranslation } from "react-i18next";
+
+export const unstable_settings = {
+  anchor: "(home)",
+};
 
 export default function TabsLayout() {
   const { t } = useTranslation();
   return (
-    <Tabs>
-      <Tabs.Screen name="index" options={{
-        title: t("tabs.scan"),
-        tabBarIcon: ({ color, size }) => (
-          <Ionicons name="barcode-outline" size={size} color={color} />
-          ),
-        headerShown: false
-      }} />
-      <Tabs.Screen name="(history)" options={{
+    <Tabs backBehavior="initialRoute">
+      <Tabs.Screen name="(home)" options={{
         title: t("tabs.history"),
-        headerShown: false,
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="library-outline" size={size} color={color} />
           ),
+        headerShown: false
+      }} />
+      <Tabs.Screen name="new-scan" options={{
+        title: t("tabs.scan"),
+        headerShown: false,
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="barcode-outline" size={size} color={color} />
+        ),
+      }} listeners={{
+        tabPress: (event) => {
+          event.preventDefault();
+          router.push("/scanner");
+        },
       }} />
       <Tabs.Screen name="about" options={{
         title: t("tabs.about"),

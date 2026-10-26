@@ -9,8 +9,13 @@
     "deleting": "Deleting…",
     "discard": "Discard"
   },
-  "tabs": { "scan": "Scan", "history": "History", "about": "About" },
-  "home": { "welcome": "Welcome to", "startScanning": "Start scanning" },
+  "tabs": { "scan": "New scan", "history": "History", "about": "About" },
+  "home": { "welcome": "Welcome to" },
+  "about": {
+    "byStudio": "By Honestudio",
+    "description": "Simple, useful apps, designed with care.",
+    "barcodeDescription": "Scan barcodes and QR codes and keep your history on your device. No ads or subscriptions."
+  },
   "scanner": {
     "guide": "Position a barcode or QR code inside the frame",
     "checkingAccess": "Checking camera access…",
@@ -27,7 +32,7 @@
   "history": {
     "loading": "Loading history",
     "empty": "No saved scans yet.",
-    "loadError": "Unable to load history. Please reopen this tab to try again."
+    "loadError": "Unable to load history. Please reopen this screen to try again."
   },
   "detail": {
     "loading": "Loading scan details",

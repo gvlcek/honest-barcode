@@ -1,15 +1,13 @@
 import { Stack } from "expo-router";
-import { useTranslation } from "react-i18next";
 
 export const unstable_settings = {
-  anchor: "history",
+  anchor: "index",
 };
 
-export default function HistoryLayout() {
-  const { t } = useTranslation();
+export default function HomeLayout() {
   return (
     <Stack>
-      <Stack.Screen name="history" options={{ title: t("tabs.history") }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
         name="scan/[scanId]"
         options={{ title: "", headerBackButtonDisplayMode: "minimal" }}

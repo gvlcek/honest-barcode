@@ -74,14 +74,14 @@ export default function ScanDetailScreen() {
     if (!scan || !isDraft) return;
 
     await saveScan(database, scan);
-    router.dismissTo("/history");
+    router.dismissTo("/");
   };
 
   const handleDeleteScan = async () => {
     if (!scan || isDraft) return;
 
     await deleteScan(database, scan.scannedAt.toISOString());
-    router.dismissTo("/history");
+    router.dismissTo("/");
   };
 
   return (

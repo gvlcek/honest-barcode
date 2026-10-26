@@ -1,9 +1,9 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import ScanHistoryList from "@/components/ScanHistoryList";
 
-export default function App() {
+export default function HomeScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
@@ -28,14 +28,7 @@ export default function App() {
       </View>
 
       <View className="scan-body">
-        <Pressable
-          className="scan-button"
-          accessibilityRole="button"
-          style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
-          onPress={() => router.push("/scanner")}
-        >
-          <Text className="scan-button-label">{t("home.startScanning")}</Text>
-        </Pressable>
+        <ScanHistoryList />
       </View>
     </View>
   );
