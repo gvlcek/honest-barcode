@@ -5,12 +5,16 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import ScannerGuide from "@/components/ScannerGuide";
 import type { BarcodeScanningResult } from "expo-camera";
 import type { Scan } from "@/models/Scan";
+import { useTranslation } from "react-i18next";
 
 const ScannerScreen = () => {
+    const { t } = useTranslation();
     const [permission, requestPermission, getPermission] = useCameraPermissions();
     const [isRequesting, setIsRequesting] = useState(false);
-    const [permissionError, setPermissionError] = useState<string | null>(null);
-    const [cameraError, setCameraError] = useState<string | null>(null);
+    const [permissionError, setPermissionError] = useState<
+        "scanner.requestError" | "scanner.checkError" | "scanner.settingsError" | null
+    >(null);
+    const [cameraError, setCameraError] = useState(false);
     const [isScreenFocused, setIsScreenFocused] = useState(false);
     const [isScanPaused, setIsScanPaused] = useState(false);
     const [isAppActive, setIsAppActive] = useState(AppState.currentState === "active");
@@ -33,7 +37,7 @@ const ScannerScreen = () => {
         try {
             await requestPermission();
         } catch {
-            setPermissionError("Unable to request camera access. Please try again.");
+            setPermissionError("scanner.requestError");
         } finally {
             requestInFlight.current = false;
             setIsRequesting(false);
@@ -58,7 +62,7 @@ const ScannerScreen = () => {
             // Refresh after returning from Settings without prompting again.
             if (previousState === "background" && nextState === "active") {
                 void getPermission().catch(() => {
-                    setPermissionError("Unable to check camera access. Please reopen the scanner.");
+                    setPermissionError("scanner.checkError");
                 });
             }
             previousState = nextState;
@@ -71,7 +75,7 @@ const ScannerScreen = () => {
         try {
             await Linking.openSettings();
         } catch {
-            setPermissionError("Unable to open Settings. Please enable camera access manually.");
+            setPermissionError("scanner.settingsError");
         }
     };
 
@@ -103,7 +107,7 @@ const ScannerScreen = () => {
             options={{
             headerBackVisible: false,
             headerRight: () => (
-                <Button title="Close" onPress={() => router.back()} />
+                <Button title={t("common.close")} onPress={() => router.back()} />
             ),
             }}
         />
@@ -112,13 +116,13 @@ const ScannerScreen = () => {
             : "scanner-permission-screen"}>
             {!permission || isRequesting ? (
                 <>
-                    <ActivityIndicator />
-                    <Text className="scanner-permission-message">Checking camera access...</Text>
+                    <ActivityIndicator accessibilityLabel={t("scanner.checkingAccessLabel")} />
+                    <Text className="scanner-permission-message">{t("scanner.checkingAccess")}</Text>
                 </>
             ) : permission.granted ? (
                 cameraError ? (
                     <Text className="scanner-permission-error" accessibilityRole="alert">
-                        {cameraError}
+                        {t("scanner.cameraError")}
                     </Text>
                 ) : isScreenFocused && isAppActive ? (
                     <>
@@ -127,7 +131,7 @@ const ScannerScreen = () => {
                         facing="back"
                         onBarcodeScanned={isScanPaused ? undefined : handleBarcodeScanned}
                         onMountError={() => {
-                            setCameraError("Unable to start the camera. Please close the scanner and try again on a physical device.");
+                            setCameraError(true);
                         }}
                     />
                     <ScannerGuide />
@@ -135,20 +139,20 @@ const ScannerScreen = () => {
                 ) : null
             ) : (
                 <>
-                    <Text className="scanner-permission-title">Camera access needed</Text>
+                    <Text className="scanner-permission-title">{t("scanner.permissionTitle")}</Text>
                     <Text className="scanner-permission-message">
-                        HonestBarcode needs camera access to scan barcodes and QR codes.
+                        {t("scanner.permissionMessage")}
                     </Text>
                     {permission.canAskAgain ? (
-                        <Button title="Allow camera access" onPress={() => void askForPermission()} />
+                        <Button title={t("scanner.allowAccess")} onPress={() => void askForPermission()} />
                     ) : (
-                        <Button title="Open Settings" onPress={() => void openSettings()} />
+                        <Button title={t("scanner.openSettings")} onPress={() => void openSettings()} />
                     )}
                 </>
             )}
             {permissionError && (
                 <Text className="scanner-permission-error" accessibilityRole="alert">
-                    {permissionError}
+                    {t(permissionError)}
                 </Text>
             )}
         </View>

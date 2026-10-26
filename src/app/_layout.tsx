@@ -4,8 +4,12 @@ import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { SQLiteProvider } from "expo-sqlite";
 import { initializeDatabase } from "@/database/database";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
+import { useDeviceLanguage } from "@/hooks/useDeviceLanguage";
 
 export default function RootLayout() {
+  useDeviceLanguage();
   const [fontsLoaded, fontError] = useFonts({
     "sans-bold": require("../../assets/fonts/PlusJakartaSans-Bold.ttf"),
     "sans-extrabold": require("../../assets/fonts/PlusJakartaSans-ExtraBold.ttf"),
@@ -26,6 +30,7 @@ export default function RootLayout() {
   }
 
   return (
+  <I18nextProvider i18n={i18n}>
   <SQLiteProvider
     databaseName="honest-barcode.db"
     onInit={initializeDatabase}
@@ -41,5 +46,6 @@ export default function RootLayout() {
       />
     </Stack>
   </SQLiteProvider>
+  </I18nextProvider>
 );
 }

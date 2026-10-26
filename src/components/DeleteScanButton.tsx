@@ -1,22 +1,24 @@
 import { useRef, useState } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface DeleteScanButtonProps {
   onDelete: () => Promise<void>;
 }
 
 export default function DeleteScanButton({ onDelete }: DeleteScanButtonProps) {
+  const { t } = useTranslation();
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(false);
   const deleteInFlight = useRef(false);
 
   const performDelete = async () => {
     setIsDeleting(true);
-    setError(null);
+    setError(false);
     try {
       await onDelete();
     } catch {
-      setError("Unable to delete this scan. Please try again.");
+      setError(true);
     } finally {
       deleteInFlight.current = false;
       setIsDeleting(false);
@@ -28,16 +30,16 @@ export default function DeleteScanButton({ onDelete }: DeleteScanButtonProps) {
     deleteInFlight.current = true;
 
     Alert.alert(
-      "Delete scan?",
-      "This scan will be permanently removed from your history.",
+      t("detail.deleteTitle"),
+      t("detail.deleteMessage"),
       [
         {
-          text: "Cancel",
+          text: t("common.cancel"),
           style: "cancel",
           onPress: () => { deleteInFlight.current = false; },
         },
         {
-          text: "Delete",
+          text: t("common.delete"),
           style: "destructive",
           onPress: () => { void performDelete(); },
         },
@@ -50,7 +52,7 @@ export default function DeleteScanButton({ onDelete }: DeleteScanButtonProps) {
     <View className="gap-3">
       {error && (
         <Text accessibilityRole="alert" className="scanner-permission-error">
-          {error}
+          {t("detail.deleteError")}
         </Text>
       )}
       <Pressable
@@ -62,7 +64,7 @@ export default function DeleteScanButton({ onDelete }: DeleteScanButtonProps) {
         style={({ pressed }) => ({ opacity: isDeleting ? 0.6 : pressed ? 0.75 : 1 })}
       >
         <Text className="scan-delete-button-label">
-          {isDeleting ? "Deleting…" : "Delete"}
+          {isDeleting ? t("common.deleting") : t("common.delete")}
         </Text>
       </Pressable>
     </View>

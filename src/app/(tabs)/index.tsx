@@ -1,8 +1,10 @@
 import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export default function App() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
   return (
@@ -20,7 +22,7 @@ export default function App() {
           accessible={false}
         />
         <View className="scan-header-copy">
-          <Text className="scan-greeting">Welcome to</Text>
+          <Text className="scan-greeting">{t("home.welcome")}</Text>
           <Text className="scan-title">HonestBarcode</Text>
         </View>
       </View>
@@ -32,7 +34,7 @@ export default function App() {
           style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
           onPress={() => router.push("/scanner")}
         >
-          <Text className="scan-button-label">Start scanning</Text>
+          <Text className="scan-button-label">{t("home.startScanning")}</Text>
         </Pressable>
       </View>
     </View>

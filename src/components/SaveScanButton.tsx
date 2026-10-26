@@ -1,13 +1,15 @@
 import { useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface SaveScanButtonProps {
   onSave?: () => Promise<void>;
 }
 
 export default function SaveScanButton({ onSave }: SaveScanButtonProps) {
+  const { t } = useTranslation();
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(false);
   const saveInFlight = useRef(false);
   const isDisabled = !onSave || isSaving;
 
@@ -16,12 +18,12 @@ export default function SaveScanButton({ onSave }: SaveScanButtonProps) {
 
     saveInFlight.current = true;
     setIsSaving(true);
-    setError(null);
+    setError(false);
 
     try {
       await onSave();
     } catch {
-      setError("Unable to save this scan. Please try again.");
+      setError(true);
     } finally {
       saveInFlight.current = false;
       setIsSaving(false);
@@ -32,7 +34,7 @@ export default function SaveScanButton({ onSave }: SaveScanButtonProps) {
     <View className="gap-3">
       {error && (
         <Text accessibilityRole="alert" className="scanner-permission-error">
-          {error}
+          {t("detail.saveError")}
         </Text>
       )}
       <Pressable
@@ -43,7 +45,7 @@ export default function SaveScanButton({ onSave }: SaveScanButtonProps) {
         onPress={handleSave}
       >
         <Text className="scan-save-button-label">
-          {isSaving ? "Saving…" : "Save"}
+          {isSaving ? t("common.saving") : t("common.save")}
         </Text>
       </Pressable>
     </View>

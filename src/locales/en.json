@@ -1,0 +1,46 @@
+{
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "goBack": "Go back",
+    "save": "Save",
+    "saving": "Saving…",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "discard": "Discard"
+  },
+  "tabs": { "scan": "Scan", "history": "History", "about": "About" },
+  "home": { "welcome": "Welcome to", "startScanning": "Start scanning" },
+  "scanner": {
+    "guide": "Position a barcode or QR code inside the frame",
+    "checkingAccess": "Checking camera access…",
+    "checkingAccessLabel": "Checking camera access",
+    "permissionTitle": "Camera access needed",
+    "permissionMessage": "HonestBarcode needs camera access to scan barcodes and QR codes.",
+    "allowAccess": "Allow camera access",
+    "openSettings": "Open Settings",
+    "requestError": "Unable to request camera access. Please try again.",
+    "checkError": "Unable to check camera access. Please reopen the scanner.",
+    "settingsError": "Unable to open Settings. Please enable camera access manually.",
+    "cameraError": "Unable to start the camera. Please close the scanner and try again on a physical device."
+  },
+  "history": {
+    "loading": "Loading history",
+    "empty": "No saved scans yet.",
+    "loadError": "Unable to load history. Please reopen this tab to try again."
+  },
+  "detail": {
+    "loading": "Loading scan details",
+    "content": "Content",
+    "format": "Format",
+    "scannedAt": "Scanned at",
+    "notSaved": "This scan has not been saved to history.",
+    "invalidScan": "Scan details are unavailable. Please scan the code again.",
+    "notFound": "This scan could not be found in history.",
+    "loadError": "Unable to load this scan. Please return to History and try again.",
+    "saveError": "Unable to save this scan. Please try again.",
+    "deleteError": "Unable to delete this scan. Please try again.",
+    "deleteTitle": "Delete scan?",
+    "deleteMessage": "This scan will be permanently removed from your history."
+  }
+}

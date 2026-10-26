@@ -1,0 +1,46 @@
+{
+  "common": {
+    "close": "Cerrar",
+    "cancel": "Cancelar",
+    "goBack": "Volver",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "delete": "Eliminar",
+    "deleting": "Eliminando…",
+    "discard": "Descartar"
+  },
+  "tabs": { "scan": "Escanear", "history": "Historial", "about": "Acerca de" },
+  "home": { "welcome": "Te damos la bienvenida a", "startScanning": "Comenzar a escanear" },
+  "scanner": {
+    "guide": "Colocá un código de barras o QR dentro del marco",
+    "checkingAccess": "Comprobando el acceso a la cámara…",
+    "checkingAccessLabel": "Comprobando el acceso a la cámara",
+    "permissionTitle": "Se necesita acceso a la cámara",
+    "permissionMessage": "HonestBarcode necesita acceder a la cámara para escanear códigos de barras y QR.",
+    "allowAccess": "Permitir acceso a la cámara",
+    "openSettings": "Abrir ajustes",
+    "requestError": "No se pudo solicitar acceso a la cámara. Volvé a intentarlo.",
+    "checkError": "No se pudo comprobar el acceso a la cámara. Volvé a abrir el escáner.",
+    "settingsError": "No se pudieron abrir los ajustes. Habilitá el acceso a la cámara manualmente.",
+    "cameraError": "No se pudo iniciar la cámara. Cerrá el escáner y volvé a intentarlo en un dispositivo físico."
+  },
+  "history": {
+    "loading": "Cargando el historial",
+    "empty": "Todavía no hay escaneos guardados.",
+    "loadError": "No se pudo cargar el historial. Volvé a abrir esta pestaña para intentarlo de nuevo."
+  },
+  "detail": {
+    "loading": "Cargando los detalles del escaneo",
+    "content": "Contenido",
+    "format": "Formato",
+    "scannedAt": "Fecha del escaneo",
+    "notSaved": "Este escaneo todavía no se guardó en el historial.",
+    "invalidScan": "Los detalles no están disponibles. Volvé a escanear el código.",
+    "notFound": "No se encontró este escaneo en el historial.",
+    "loadError": "No se pudo cargar este escaneo. Volvé al historial e intentalo de nuevo.",
+    "saveError": "No se pudo guardar este escaneo. Volvé a intentarlo.",
+    "deleteError": "No se pudo eliminar este escaneo. Volvé a intentarlo.",
+    "deleteTitle": "¿Eliminar escaneo?",
+    "deleteMessage": "Este escaneo se eliminará permanentemente del historial."
+  }
+}

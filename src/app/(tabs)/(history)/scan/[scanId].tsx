@@ -7,8 +7,15 @@ import SaveScanButton from "@/components/SaveScanButton";
 import DeleteScanButton from "@/components/DeleteScanButton";
 import { useSQLiteContext } from "expo-sqlite";
 import { deleteScan, getScan, saveScan } from "@/repositories/scanRepository";
+import { useTranslation } from "react-i18next";
+import { useCalendars, useLocales } from "expo-localization";
+import { resolveLocale } from "@/i18n/locale";
 
 export default function ScanDetailScreen() {
+  const { t } = useTranslation();
+  const locales = useLocales();
+  const uses24hourClock = useCalendars()[0]?.uses24hourClock;
+  const { languageTag } = resolveLocale(locales);
   const database = useSQLiteContext();
   const { scanId, value, barcodeType } = useLocalSearchParams<{
     scanId: string;
@@ -20,7 +27,7 @@ export default function ScanDetailScreen() {
   const [savedResult, setSavedResult] = useState<{
     id: string;
     scan: Scan | null;
-    error: string | null;
+    error: boolean;
   } | null>(null);
   const isLoading = !isDraft && savedResult?.id !== scanId;
 
@@ -31,13 +38,13 @@ export default function ScanDetailScreen() {
     const loadScan = async () => {
       try {
         const savedScan = await getScan(database, scanId);
-        if (isActive) setSavedResult({ id: scanId, scan: savedScan, error: null });
+        if (isActive) setSavedResult({ id: scanId, scan: savedScan, error: false });
       } catch {
         if (isActive) {
           setSavedResult({
             id: scanId,
             scan: null,
-            error: "Unable to load this scan. Please return to History and try again.",
+            error: true,
           });
         }
       }
@@ -92,25 +99,27 @@ export default function ScanDetailScreen() {
         }}
       >
         {isLoading ? (
-          <ActivityIndicator accessibilityLabel="Loading scan details" />
+          <ActivityIndicator accessibilityLabel={t("detail.loading")} />
         ) : scan ? (
           <>
             <View className="scan-detail-card">
-              <Text className="scan-detail-label">Content</Text>
+              <Text className="scan-detail-label">{t("detail.content")}</Text>
               <Text selectable className="scan-detail-value">{scan.value}</Text>
-              <Text className="scan-detail-label">Format</Text>
+              <Text className="scan-detail-label">{t("detail.format")}</Text>
               <Text className="scan-detail-value">{scan.type}</Text>
-              <Text className="scan-detail-label">Scanned at</Text>
+              <Text className="scan-detail-label">{t("detail.scannedAt")}</Text>
               <Text className="scan-detail-value">
-                {scan.scannedAt.toLocaleString()}
+                {scan.scannedAt.toLocaleString(languageTag, {
+                  hour12: uses24hourClock == null ? undefined : !uses24hourClock,
+                })}
               </Text>
             </View>
             {isDraft && (
               <>
                 <Text className="scan-detail-label">
-                  This scan has not been saved to history.
+                  {t("detail.notSaved")}
                 </Text>
-                <Button title="Discard" color="#ff383c" onPress={closeDetails} />
+                <Button title={t("common.discard")} color="#ff383c" onPress={closeDetails} />
               </>
             )}
           </>
@@ -118,10 +127,10 @@ export default function ScanDetailScreen() {
           <>
             <Text accessibilityRole="alert" className="scan-detail-value">
               {isDraft
-                ? "Scan details are unavailable. Please scan the code again."
-                : savedResult?.error ?? "This scan could not be found in history."}
+                ? t("detail.invalidScan")
+                : savedResult?.error ? t("detail.loadError") : t("detail.notFound")}
             </Text>
-            <Button title="Go back" onPress={closeDetails} />
+            <Button title={t("common.goBack")} onPress={closeDetails} />
           </>
         )}
       </ScrollView>

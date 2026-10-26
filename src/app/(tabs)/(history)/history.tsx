@@ -4,17 +4,19 @@ import { Link, useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import type { Scan } from "@/models/Scan";
 import { getScans } from "@/repositories/scanRepository";
+import { useTranslation } from "react-i18next";
 
 export default function HistoryScreen() {
+  const { t } = useTranslation();
   const database = useSQLiteContext();
   const [scans, setScans] = useState<Scan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(false);
 
   useFocusEffect(useCallback(() => {
     let isActive = true;
     setIsLoading(true);
-    setError(null);
+    setError(false);
 
     const loadScans = async () => {
       try {
@@ -23,7 +25,7 @@ export default function HistoryScreen() {
       } catch {
         if (isActive) {
           setScans([]);
-          setError("Unable to load history. Please reopen this tab to try again.");
+          setError(true);
         }
       } finally {
         if (isActive) setIsLoading(false);
@@ -59,13 +61,13 @@ export default function HistoryScreen() {
         </Link>
       )}
       ListEmptyComponent={isLoading ? (
-        <ActivityIndicator accessibilityLabel="Loading history" />
+        <ActivityIndicator accessibilityLabel={t("history.loading")} />
       ) : error ? (
         <Text accessibilityRole="alert" className="scanner-permission-error">
-          {error}
+          {t("history.loadError")}
         </Text>
       ) : (
-        <Text className="scan-detail-label">No saved scans yet.</Text>
+        <Text className="scan-detail-label">{t("history.empty")}</Text>
       )}
     />
   );

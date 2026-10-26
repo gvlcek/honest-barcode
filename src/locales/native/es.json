@@ -1,0 +1,5 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "HonestBarcode necesita acceder a la cámara para escanear códigos de barras y QR."
+  }
+}
