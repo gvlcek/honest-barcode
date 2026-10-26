@@ -33,8 +33,8 @@
     @apply flex-row items-center gap-4 pb-10;
   }
 
-  .scan-logo-placeholder {
-    @apply size-20 shrink-0 rounded-2xl bg-white/20;
+  .scan-logo {
+    @apply size-20 shrink-0 overflow-hidden rounded-2xl bg-white;
   }
 
   .scan-header-copy {
