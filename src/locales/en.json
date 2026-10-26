@@ -31,7 +31,7 @@
   },
   "history": {
     "loading": "Loading history",
-    "empty": "No saved scans yet.",
+    "empty": "No saved scans yet. Tap New scan to get started.",
     "loadError": "Unable to load history. Please reopen this screen to try again."
   },
   "detail": {

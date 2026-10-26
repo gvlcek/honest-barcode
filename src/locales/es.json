@@ -31,7 +31,7 @@
   },
   "history": {
     "loading": "Cargando el historial",
-    "empty": "Todavía no hay escaneos guardados.",
+    "empty": "Todavía no hay escaneos guardados. Tocá Nuevo escaneo para empezar.",
     "loadError": "No se pudo cargar el historial. Volvé a abrir esta pantalla para intentarlo de nuevo."
   },
   "detail": {
