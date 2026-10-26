@@ -12,7 +12,7 @@
   "tabs": { "scan": "Nuevo escaneo", "history": "Historial", "about": "Acerca de" },
   "home": { "welcome": "Te damos la bienvenida a" },
   "about": {
-    "byStudio": "Una creación de Honestudio",
+    "byStudio": "Una creación de <studio>HONEStudio</studio>",
     "description": "Aplicaciones simples y útiles, diseñadas con cuidado.",
     "barcodeDescription": "Escaneá códigos de barras y QR y guardá el historial en tu dispositivo. Sin anuncios ni suscripciones."
   },

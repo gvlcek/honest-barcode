@@ -31,6 +31,7 @@ export default function TabsLayout() {
       }} />
       <Tabs.Screen name="about" options={{
         title: t("tabs.about"),
+        headerShown: false,
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="information-circle-outline" size={size} color={color} />
         )

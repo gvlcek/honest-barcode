@@ -12,7 +12,7 @@
   "tabs": { "scan": "New scan", "history": "History", "about": "About" },
   "home": { "welcome": "Welcome to" },
   "about": {
-    "byStudio": "By Honestudio",
+    "byStudio": "By <studio>HONEStudio</studio>",
     "description": "Simple, useful apps, designed with care.",
     "barcodeDescription": "Scan barcodes and QR codes and keep your history on your device. No ads or subscriptions."
   },

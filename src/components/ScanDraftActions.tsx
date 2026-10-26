@@ -2,19 +2,19 @@ import { useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-interface SaveScanButtonProps {
-  onSave?: () => Promise<void>;
+interface ScanDraftActionsProps {
+  onSave: () => Promise<void>;
+  onDiscard: () => void;
 }
 
-export default function SaveScanButton({ onSave }: SaveScanButtonProps) {
+export default function ScanDraftActions({ onSave, onDiscard }: ScanDraftActionsProps) {
   const { t } = useTranslation();
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(false);
   const saveInFlight = useRef(false);
-  const isDisabled = !onSave || isSaving;
 
   const handleSave = async () => {
-    if (!onSave || saveInFlight.current) return;
+    if (saveInFlight.current) return;
 
     saveInFlight.current = true;
     setIsSaving(true);
@@ -40,13 +40,26 @@ export default function SaveScanButton({ onSave }: SaveScanButtonProps) {
       <Pressable
         className="scan-save-button"
         accessibilityRole="button"
-        accessibilityState={{ disabled: isDisabled, busy: isSaving }}
-        disabled={isDisabled}
+        accessibilityState={{ disabled: isSaving, busy: isSaving }}
+        disabled={isSaving}
         onPress={handleSave}
+        style={({ pressed }) => ({ opacity: isSaving ? 0.6 : pressed ? 0.75 : 1 })}
       >
         <Text className="scan-save-button-label">
           {isSaving ? t("common.saving") : t("common.save")}
         </Text>
+      </Pressable>
+      <Pressable
+        className="scan-discard-button"
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isSaving }}
+        disabled={isSaving}
+        onPress={() => {
+          if (!saveInFlight.current) onDiscard();
+        }}
+        style={({ pressed }) => ({ opacity: isSaving ? 0.6 : pressed ? 0.75 : 1 })}
+      >
+        <Text className="scan-discard-button-label">{t("common.discard")}</Text>
       </Pressable>
     </View>
   );

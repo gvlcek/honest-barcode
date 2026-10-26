@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator, Button, Platform, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Scan } from "@/models/Scan";
-import SaveScanButton from "@/components/SaveScanButton";
+import ScanDraftActions from "@/components/ScanDraftActions";
 import DeleteScanButton from "@/components/DeleteScanButton";
 import { useSQLiteContext } from "expo-sqlite";
 import { deleteScan, getScan, saveScan } from "@/repositories/scanRepository";
@@ -85,72 +85,74 @@ export default function ScanDetailScreen() {
   };
 
   return (
-    <View className="scan-detail-screen">
-      <ScrollView
-        className="scan-detail-screen"
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{
-          paddingTop: 24,
-          // iOS adjusts for the native header and safe area automatically.
-          paddingBottom: 24 + (Platform.OS === "ios" ? 0 : insets.bottom),
-          paddingLeft: 24 + (Platform.OS === "ios" ? 0 : insets.left),
-          paddingRight: 24 + (Platform.OS === "ios" ? 0 : insets.right),
-          gap: 24,
-        }}
-      >
-        {isLoading ? (
-          <ActivityIndicator accessibilityLabel={t("detail.loading")} />
-        ) : scan ? (
-          <>
-            <View className="scan-detail-card">
-              <Text className="scan-detail-label">{t("detail.content")}</Text>
-              <Text selectable className="scan-detail-value">{scan.value}</Text>
-              <Text className="scan-detail-label">{t("detail.format")}</Text>
-              <Text className="scan-detail-value">{scan.type}</Text>
-              <Text className="scan-detail-label">{t("detail.scannedAt")}</Text>
-              <Text className="scan-detail-value">
-                {scan.scannedAt.toLocaleString(languageTag, {
-                  hour12: uses24hourClock == null ? undefined : !uses24hourClock,
-                })}
-              </Text>
-            </View>
-            {isDraft && (
-              <>
-                <Text className="scan-detail-label">
-                  {t("detail.notSaved")}
-                </Text>
-                <Button title={t("common.discard")} color="#ff383c" onPress={closeDetails} />
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <Text accessibilityRole="alert" className="scan-detail-value">
-              {isDraft
-                ? t("detail.invalidScan")
-                : savedResult?.error ? t("detail.loadError") : t("detail.notFound")}
-            </Text>
-            <Button title={t("common.goBack")} onPress={closeDetails} />
-          </>
-        )}
-      </ScrollView>
-      {scan && (
-        <View
-          className="scan-detail-actions"
-          style={{
-            paddingTop: 16,
-            paddingBottom: 16,
-            paddingLeft: insets.left + 24,
-            paddingRight: insets.right + 24,
+    <>
+      <Stack.Screen options={{ headerShown: !isDraft }} />
+      <View className="scan-detail-screen">
+        <ScrollView
+          className="scan-detail-screen"
+          contentInsetAdjustmentBehavior={isDraft ? "never" : "automatic"}
+          contentContainerStyle={{
+            paddingTop: 24 + (isDraft ? insets.top : 0),
+            // Drafts have no native header, so apply their safe area explicitly.
+            paddingBottom: 24 + (!isDraft && Platform.OS !== "ios" ? insets.bottom : 0),
+            paddingLeft: 24 + (isDraft || Platform.OS !== "ios" ? insets.left : 0),
+            paddingRight: 24 + (isDraft || Platform.OS !== "ios" ? insets.right : 0),
+            gap: 24,
           }}
         >
-          {isDraft ? (
-            <SaveScanButton onSave={handleSaveScan} />
+          {isLoading ? (
+            <ActivityIndicator accessibilityLabel={t("detail.loading")} />
+          ) : scan ? (
+            <>
+              <View className="scan-detail-card">
+                <Text className="scan-detail-label">{t("detail.content")}</Text>
+                <Text selectable className="scan-detail-value">{scan.value}</Text>
+                <Text className="scan-detail-label">{t("detail.format")}</Text>
+                <Text className="scan-detail-value">{scan.type}</Text>
+                <Text className="scan-detail-label">{t("detail.scannedAt")}</Text>
+                <Text className="scan-detail-value">
+                  {scan.scannedAt.toLocaleString(languageTag, {
+                    hour12: uses24hourClock == null ? undefined : !uses24hourClock,
+                  })}
+                </Text>
+              </View>
+              {isDraft && (
+                <>
+                  <Text className="scan-detail-label">
+                    {t("detail.notSaved")}
+                  </Text>
+                </>
+              )}
+            </>
           ) : (
-            <DeleteScanButton onDelete={handleDeleteScan} />
+            <>
+              <Text accessibilityRole="alert" className="scan-detail-value">
+                {isDraft
+                  ? t("detail.invalidScan")
+                  : savedResult?.error ? t("detail.loadError") : t("detail.notFound")}
+              </Text>
+              <Button title={t("common.goBack")} onPress={closeDetails} />
+            </>
           )}
-        </View>
-      )}
-    </View>
+        </ScrollView>
+        {scan && (
+          <View
+            className="scan-detail-actions"
+            style={{
+              paddingTop: 16,
+              paddingBottom: 16,
+              paddingLeft: insets.left + 24,
+              paddingRight: insets.right + 24,
+            }}
+          >
+            {isDraft ? (
+              <ScanDraftActions onSave={handleSaveScan} onDiscard={closeDetails} />
+            ) : (
+              <DeleteScanButton onDelete={handleDeleteScan} />
+            )}
+          </View>
+        )}
+      </View>
+    </>
   );
 }

@@ -43,11 +43,6 @@ export default function ScanHistoryList() {
       contentContainerStyle={{ padding: 24, gap: 12 }}
       data={scans}
       keyExtractor={(scan) => scan.scannedAt.toISOString()}
-      ListHeaderComponent={
-        <Text accessibilityRole="header" className="history-title">
-          {t("tabs.history")}
-        </Text>
-      }
       renderItem={({ item }) => (
         <Link
           href={{
