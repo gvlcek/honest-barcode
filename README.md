@@ -6,16 +6,18 @@ A barcode and QR code scanner for iOS and Android, built with Expo, React Native
 
 HonestBarcode keeps scanning simple: capture a code, review its contents, and decide whether to save it. Saved scans are stored locally on the device, with no account or backend required. No ads or subscriptions.
 
-The core flow is working. This is an evolving mobile project, with visual polish and release preparation still in progress.
+This portfolio project explores building a cross-platform camera workflow, local persistence, and native navigation with React Native.
 
 ## Features
 
 - Scan barcodes and QR codes with the device camera.
-- Review the decoded value, code format, and scan date before saving.
+- Review the decoded value, code format, scan date, and a small photo captured at scan time.
+- Copy the scanned value or open a Google search for it.
 - Discard a result and continue scanning within the same modal session.
 - Save scans to a persistent SQLite database.
 - Browse saved scans with the newest first and open their details.
-- Delete saved scans with confirmation.
+- Delete saved scans from the details screen or swipe a row in History. Both actions ask for confirmation.
+- Follow the device’s light or dark appearance, with native tabs on iOS.
 - Use the app in English or Spanish, following device language preferences with English as the fallback.
 - Display dates using the selected locale and the device's 12/24-hour preference.
 
@@ -60,7 +62,7 @@ The tab bar has three entries:
 | Entry | Behavior |
 | --- | --- |
 | History | Opens the home screen with the welcome header and saved scans. |
-| New scan | Opens the full-screen scanner modal without selecting a separate tab screen. |
+| Scan | Opens the full-screen scanner modal without selecting a separate tab screen. |
 | About | Shows information about Honest Apps and HONEStudio. |
 
 The scanner modal contains its own navigation stack:
@@ -76,7 +78,7 @@ Home / History
 
 The first accepted result blocks additional readings. The camera is unmounted while its screen is unfocused or the app is inactive. Returning from the draft detail starts a new reading session.
 
-A saved scan opens in the home tab's stack, keeping the tab bar and native back button visible. Its detail offers Delete. A new scan opens inside the modal with Save and Discard and no navigation bar or tab bar.
+A saved scan opens in the home tab's stack, keeping the tab bar visible and providing a back button in the result header. Its detail offers Delete. A new scan opens inside the modal with Save and Discard and no navigation bar or tab bar.
 
 The on-screen scanning frame is a visual guide; it does not restrict detection to that region of the camera preview.
 
@@ -124,17 +126,18 @@ interface Scan {
   value: string;
   type: string;
   scannedAt: Date;
+  thumbnailBase64?: string;
 }
 ```
 
 `scannedAt` is represented as a `Date` in the model. The repository converts it to a UTC ISO string, including milliseconds, for storage in the `scanned_at` primary key, and reconstructs the `Date` when reading. The same timestamp identifies the scan in detail routes.
 
-Saving happens only after selecting Save. Discard leaves the database unchanged. History queries SQLite whenever the home screen gains focus, so saves and deletions appear when returning to the list. Data persists across app restarts; the app does not synchronize it with a backend.
+Saving happens only after selecting Save. Discard leaves the database unchanged. History queries SQLite whenever the home screen gains focus, so saves and deletions appear when returning to the list. Data persists across app restarts. Scan photos are stored locally as compressed JPEG thumbnails. Selecting Search on Google opens the browser with the scanned value as the query.
 
 ## Styling and localization
 
 - **NativeWind 5.0.0-rc.0**, **react-native-css 3.1.0-rc.0**, and **Tailwind CSS 4** provide styling. Theme colors, font families, and shared component classes live in `global.css`.
-- **Plus Jakarta Sans** is loaded through `expo-font`; tab icons use **Ionicons**.
+- **Plus Jakarta Sans** is loaded through `expo-font`. See the [font license](assets/fonts/OFL.txt). Native iOS tabs use SF Symbols, and Android tabs use Ionicons.
 - **expo-localization** reads device preferences. **i18next** and **react-i18next** resolve translations and update React components.
 - Add app text to both `src/locales/en.json` and `src/locales/es.json`, then use `useTranslation()` and `t("section.key")` in components. Use `Trans` when part of a translated sentence needs formatting.
 - `src/locales/native/` contains iOS camera permission descriptions. Native permission text and per-app language settings require a new app build to reflect configuration changes; Expo Go uses its own native configuration.
@@ -152,7 +155,7 @@ npx tsc --noEmit
 
 A basic device check covers:
 
-1. Open New scan, grant camera access, and scan a code.
+1. Open Scan, grant camera access, and scan a code.
 2. Confirm that a single result opens, with the expected content and format.
 3. Select Discard and scan again without closing the modal.
 4. Select Save and confirm the new entry appears first in History.
