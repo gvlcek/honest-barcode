@@ -35,10 +35,15 @@
     "loadError": "Unable to load history. Please reopen this screen to try again."
   },
   "detail": {
+    "result": "Result",
     "loading": "Loading scan details",
-    "content": "Content",
+    "code": "Code",
+    "copyCode": "Copy code",
+    "codeCopied": "Code copied",
+    "copyError": "Could not copy the code.",
     "format": "Format",
     "scannedAt": "Scanned at",
+    "searchGoogle": "Search on Google",
     "notSaved": "This scan has not been saved to history.",
     "invalidScan": "Scan details are unavailable. Please scan the code again.",
     "notFound": "This scan could not be found in history.",

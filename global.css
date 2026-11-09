@@ -121,10 +121,6 @@
     @apply text-center font-sans text-sm text-error;
   }
 
-  .scan-detail-screen {
-    @apply flex-1 bg-background;
-  }
-
   .scan-detail-card {
     @apply gap-3 rounded-2xl bg-card p-6;
   }
@@ -168,15 +164,15 @@
     @apply flex-1 bg-accent;
   }
 
-  .about-header {
+  .section-header {
     @apply pb-8;
   }
 
-  .about-header-title {
+  .section-header-title {
     @apply font-sans-bold text-3xl text-white;
   }
 
-  .about-body {
+  .section-body {
     @apply flex-1 overflow-hidden rounded-t-3xl bg-background;
   }
 

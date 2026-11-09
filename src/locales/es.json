@@ -35,10 +35,15 @@
     "loadError": "No se pudo cargar el historial. Volvé a abrir esta pantalla para intentarlo de nuevo."
   },
   "detail": {
+    "result": "Resultado",
     "loading": "Cargando los detalles del escaneo",
-    "content": "Contenido",
+    "code": "Código",
+    "copyCode": "Copiar código",
+    "codeCopied": "Código copiado",
+    "copyError": "No se pudo copiar el código.",
     "format": "Formato",
     "scannedAt": "Fecha del escaneo",
+    "searchGoogle": "Buscar en Google",
     "notSaved": "Este escaneo todavía no se guardó en el historial.",
     "invalidScan": "Los detalles no están disponibles. Volvé a escanear el código.",
     "notFound": "No se encontró este escaneo en el historial.",

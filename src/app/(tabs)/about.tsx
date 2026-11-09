@@ -8,18 +8,18 @@ export default function AboutScreen() {
   return (
     <View className="about-screen">
       <View
-        className="about-header"
+        className="section-header"
         style={{
           paddingTop: insets.top + 24,
           paddingLeft: insets.left + 24,
           paddingRight: insets.right + 24,
         }}
       >
-        <Text accessibilityRole="header" className="about-header-title">
+        <Text accessibilityRole="header" className="section-header-title">
           {t("tabs.about")}
         </Text>
       </View>
-      <View className="about-body">
+      <View className="section-body">
         <ScrollView
           contentInsetAdjustmentBehavior="never"
           contentContainerStyle={{
