@@ -1,5 +1,7 @@
 import { router, Tabs } from "expo-router";
+import { NativeTabs } from "expo-router/native-tabs";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
+import { Platform } from "react-native";
 import { useTranslation } from "react-i18next";
 
 export const unstable_settings = {
@@ -8,6 +10,30 @@ export const unstable_settings = {
 
 export default function TabsLayout() {
   const { t } = useTranslation();
+
+  if (Platform.OS === "ios") {
+    return (
+      <NativeTabs backBehavior="initialRoute">
+        <NativeTabs.Trigger name="(home)">
+          <NativeTabs.Trigger.Label>{t("tabs.history")}</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf="books.vertical" />
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger
+          name="new-scan"
+          disabled
+          listeners={{ tabPress: () => router.push("/scanner") }}
+        >
+          <NativeTabs.Trigger.Label>{t("tabs.scan")}</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf="barcode" />
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="about">
+          <NativeTabs.Trigger.Label>{t("tabs.about")}</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf="info.circle" />
+        </NativeTabs.Trigger>
+      </NativeTabs>
+    );
+  }
+
   return (
     <Tabs backBehavior="initialRoute">
       <Tabs.Screen name="(home)" options={{

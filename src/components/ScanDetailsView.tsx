@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { ActivityIndicator, Alert, Button, Pressable, ScrollView, Text, View, useColorScheme } from "react-native";
+import { ActivityIndicator, Alert, Button, Platform, Pressable, ScrollView, Text, View, useColorScheme } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { Link } from "expo-router";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
@@ -32,6 +32,7 @@ export default function ScanDetailsView({
   const insets = useSafeAreaInsets();
   const { languageTag } = resolveLocale(useLocales());
   const uses24hourClock = useCalendars()[0]?.uses24hourClock;
+  const usesFloatingTabs = !isDraft && Platform.OS === "ios";
   const googleSearchUrl: `https://${string}` | null = scan?.value.trim()
     ? `https://www.google.com/search?q=${encodeURIComponent(scan.value)}`
     : null;
@@ -77,7 +78,7 @@ export default function ScanDetailsView({
       <View className="section-body">
         <ScrollView
           className="flex-1"
-          contentInsetAdjustmentBehavior="never"
+          contentInsetAdjustmentBehavior={usesFloatingTabs ? "automatic" : "never"}
           contentContainerStyle={{
             paddingTop: 24,
             paddingBottom: 24 + (isDraft && !actions ? insets.bottom : 0),
@@ -129,6 +130,7 @@ export default function ScanDetailsView({
               {isDraft && (
                 <Text className="scan-detail-label">{t("detail.notSaved")}</Text>
               )}
+              {usesFloatingTabs && actions}
             </>
           ) : (
             <>
@@ -139,7 +141,7 @@ export default function ScanDetailsView({
             </>
           )}
         </ScrollView>
-        {scan && actions && (
+        {scan && actions && !usesFloatingTabs && (
           <View
             className="scan-detail-actions"
             style={{

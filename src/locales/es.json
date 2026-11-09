@@ -9,7 +9,7 @@
     "deleting": "Eliminando…",
     "discard": "Descartar"
   },
-  "tabs": { "scan": "Nuevo escaneo", "history": "Historial", "about": "Acerca de" },
+  "tabs": { "scan": "Escanear", "history": "Historial", "about": "Acerca de" },
   "home": { "welcome": "Te damos la bienvenida a" },
   "about": {
     "byStudio": "Una creación de <studio>HONEStudio</studio>",
@@ -31,7 +31,7 @@
   },
   "history": {
     "loading": "Cargando el historial",
-    "empty": "Todavía no hay escaneos guardados. Tocá Nuevo escaneo para empezar.",
+    "empty": "Todavía no hay escaneos guardados. Tocá Escanear para empezar.",
     "loadError": "No se pudo cargar el historial. Volvé a abrir esta pantalla para intentarlo de nuevo."
   },
   "detail": {

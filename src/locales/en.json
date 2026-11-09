@@ -9,7 +9,7 @@
     "deleting": "Deleting…",
     "discard": "Discard"
   },
-  "tabs": { "scan": "New scan", "history": "History", "about": "About" },
+  "tabs": { "scan": "Scan", "history": "History", "about": "About" },
   "home": { "welcome": "Welcome to" },
   "about": {
     "byStudio": "By <studio>HONEStudio</studio>",
@@ -31,7 +31,7 @@
   },
   "history": {
     "loading": "Loading history",
-    "empty": "No saved scans yet. Tap New scan to get started.",
+    "empty": "No saved scans yet. Tap Scan to get started.",
     "loadError": "Unable to load history. Please reopen this screen to try again."
   },
   "detail": {
