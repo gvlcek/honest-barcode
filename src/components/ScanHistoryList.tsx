@@ -1,13 +1,22 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, Text } from "react-native";
 import { Link, useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import type { Scan } from "@/models/Scan";
 import { getScans } from "@/repositories/scanRepository";
 import { useTranslation } from "react-i18next";
+import { useCalendars, useLocales } from "expo-localization";
+import { resolveLocale } from "@/i18n/locale";
 
 export default function ScanHistoryList() {
   const { t } = useTranslation();
+  const { languageTag } = resolveLocale(useLocales());
+  const uses24hourClock = useCalendars()[0]?.uses24hourClock;
+  const dateFormatter = useMemo(() => new Intl.DateTimeFormat(languageTag, {
+    dateStyle: "medium",
+    timeStyle: "medium",
+    hour12: uses24hourClock == null ? undefined : !uses24hourClock,
+  }), [languageTag, uses24hourClock]);
   const database = useSQLiteContext();
   const [scans, setScans] = useState<Scan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,7 +65,7 @@ export default function ScanHistoryList() {
             accessibilityRole="link"
             style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
           >
-            <Text className="history-value">{item.value}</Text>
+            <Text className="history-date">{dateFormatter.format(item.scannedAt)}</Text>
           </Pressable>
         </Link>
       )}
@@ -67,7 +76,7 @@ export default function ScanHistoryList() {
           {t("history.loadError")}
         </Text>
       ) : (
-        <Text className="scan-detail-label">{t("history.empty")}</Text>
+        <Text className="scan-detail-label text-center">{t("history.empty")}</Text>
       )}
     />
   );

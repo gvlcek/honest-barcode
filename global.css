@@ -15,6 +15,7 @@
   --color-border: rgba(60, 60, 67, 0.29);
   --color-success: #34c759;
   --color-destructive: #ff383c;
+  --color-error: #b4232a;
 
   --font-sans: sans-regular;
   --font-sans-light: sans-light;
@@ -22,6 +23,21 @@
   --font-sans-semibold: sans-semibold;
   --font-sans-bold: sans-bold;
   --font-sans-extrabold: sans-extrabold;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #121214;
+    --color-foreground: #f5f5f7;
+    --color-card: #232326;
+    --color-muted: #2c2c30;
+    --color-muted-foreground: #b3b3bb;
+    --color-primary: #f5f5f7;
+    --color-accent: #0061c9;
+    --color-border: #48484d;
+    --color-destructive: #c52835;
+    --color-error: #ff858a;
+  }
 }
 
 @layer components {
@@ -102,7 +118,7 @@
   }
 
   .scanner-permission-error {
-    @apply text-center font-sans text-sm text-destructive;
+    @apply text-center font-sans text-sm text-error;
   }
 
   .scan-detail-screen {
@@ -144,7 +160,7 @@
     @apply flex-1 bg-background;
   }
 
-  .history-value {
+  .history-date {
     @apply rounded-xl bg-card p-4 font-sans text-base text-foreground;
   }
 

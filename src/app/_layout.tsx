@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import "../../global.css";
-import { Stack } from "expo-router";
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
+import { useColorScheme } from "react-native";
 import { useFonts } from "expo-font";
 import { SQLiteProvider } from "expo-sqlite";
 import { initializeDatabase } from "@/database/database";
@@ -14,6 +15,7 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   useDeviceLanguage();
+  const colorScheme = useColorScheme();
   const [fontsLoaded, fontError] = useFonts({
     "sans-bold": require("../../assets/fonts/PlusJakartaSans-Bold.ttf"),
     "sans-extrabold": require("../../assets/fonts/PlusJakartaSans-ExtraBold.ttf"),
@@ -34,22 +36,24 @@ export default function RootLayout() {
   }
 
   return (
-  <I18nextProvider i18n={i18n}>
-  <SQLiteProvider
-    databaseName="honest-barcode.db"
-    onInit={initializeDatabase}
-  >
-    <Stack>
-      <Stack.Screen
-        name="(tabs)"
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="scanner"
-        options={{ presentation: "fullScreenModal", headerShown: false }}
-      />
-    </Stack>
-  </SQLiteProvider>
-  </I18nextProvider>
-);
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <I18nextProvider i18n={i18n}>
+        <SQLiteProvider
+          databaseName="honest-barcode.db"
+          onInit={initializeDatabase}
+        >
+          <Stack>
+            <Stack.Screen
+              name="(tabs)"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="scanner"
+              options={{ presentation: "fullScreenModal", headerShown: false }}
+            />
+          </Stack>
+        </SQLiteProvider>
+      </I18nextProvider>
+    </ThemeProvider>
+  );
 }

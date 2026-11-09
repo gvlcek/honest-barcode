@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, AppState, Button, Linking, Text, View } from "react-native";
 import { router, Stack, useFocusEffect } from "expo-router";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import * as Haptics from "expo-haptics";
 import ScannerGuide from "@/components/ScannerGuide";
 import type { BarcodeScanningResult } from "expo-camera";
 import type { Scan } from "@/models/Scan";
@@ -90,6 +91,9 @@ const ScannerScreen = () => {
 
         hasScanned.current = true;
         setIsScanPaused(true);
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {
+            // Haptic feedback is optional and must not interrupt a scan.
+        });
 
         const scan: Scan = {
             value: result.data,
