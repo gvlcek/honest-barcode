@@ -157,7 +157,7 @@
   }
 
   .history-date {
-    @apply rounded-xl bg-card p-4 font-sans text-base text-foreground;
+    @apply p-4 font-sans text-base text-foreground;
   }
 
   .about-screen {

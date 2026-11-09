@@ -1,12 +1,71 @@
 import { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, FlatList, Pressable, Text } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
 import { Link, useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import type { Scan } from "@/models/Scan";
-import { getScans } from "@/repositories/scanRepository";
+import { deleteScan, getScans } from "@/repositories/scanRepository";
 import { useTranslation } from "react-i18next";
 import { useCalendars, useLocales } from "expo-localization";
 import { resolveLocale } from "@/i18n/locale";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import { useDeleteScanConfirmation } from "@/hooks/useDeleteScanConfirmation";
+
+interface ScanHistoryRowProps {
+  scanId: string;
+  date: string;
+  onDelete: () => Promise<void>;
+}
+
+function ScanHistoryRow({ scanId, date, onDelete }: ScanHistoryRowProps) {
+  const { t } = useTranslation();
+  const { confirmDelete, isDeleting, error } = useDeleteScanConfirmation(onDelete);
+
+  return (
+    <View>
+      <Swipeable
+        overshootRight={false}
+        containerStyle={{ borderRadius: 12 }}
+        renderRightActions={() => (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            disabled={isDeleting}
+            onPress={confirmDelete}
+            className="min-w-24 items-center justify-center bg-destructive px-4 active:opacity-75"
+          >
+            <Text className="font-sans-semibold text-white">
+              {t(isDeleting ? "common.deleting" : "common.delete")}
+            </Text>
+          </Pressable>
+        )}
+      >
+        <Link
+          href={{ pathname: "/scan/[scanId]", params: { scanId } }}
+          asChild
+          withAnchor
+        >
+          <Pressable
+            accessibilityRole="link"
+            accessibilityActions={[{ name: "delete", label: t("common.delete") }]}
+            onAccessibilityAction={({ nativeEvent }) => {
+              if (nativeEvent.actionName === "delete") confirmDelete();
+            }}
+            className="bg-card active:bg-muted"
+          >
+            <Text className="history-date">{date}</Text>
+          </Pressable>
+        </Link>
+      </Swipeable>
+      {error && (
+        <Text accessibilityRole="alert" className="scanner-permission-error mt-2">
+          {t("detail.deleteError")}
+        </Text>
+      )}
+    </View>
+  );
+}
 
 export default function ScanHistoryList() {
   const { t } = useTranslation();
@@ -46,38 +105,36 @@ export default function ScanHistoryList() {
   }, [database]));
 
   return (
-    <FlatList
-      className="history-screen"
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ padding: 24, gap: 12 }}
-      data={scans}
-      keyExtractor={(scan) => scan.scannedAt.toISOString()}
-      renderItem={({ item }) => (
-        <Link
-          href={{
-            pathname: "/scan/[scanId]",
-            params: { scanId: item.scannedAt.toISOString() },
-          }}
-          asChild
-          withAnchor
-        >
-          <Pressable
-            accessibilityRole="link"
-            style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-          >
-            <Text className="history-date">{dateFormatter.format(item.scannedAt)}</Text>
-          </Pressable>
-        </Link>
-      )}
-      ListEmptyComponent={isLoading ? (
-        <ActivityIndicator accessibilityLabel={t("history.loading")} />
-      ) : error ? (
-        <Text accessibilityRole="alert" className="scanner-permission-error">
-          {t("history.loadError")}
-        </Text>
-      ) : (
-        <Text className="scan-detail-label text-center">{t("history.empty")}</Text>
-      )}
-    />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <FlatList
+        className="history-screen"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{ padding: 24, gap: 12 }}
+        data={scans}
+        keyExtractor={(scan) => scan.scannedAt.toISOString()}
+        renderItem={({ item }) => {
+          const scanId = item.scannedAt.toISOString();
+          return (
+            <ScanHistoryRow
+              scanId={scanId}
+              date={dateFormatter.format(item.scannedAt)}
+              onDelete={async () => {
+                await deleteScan(database, scanId);
+                setScans((current) => current.filter((scan) => scan.scannedAt.toISOString() !== scanId));
+              }}
+            />
+          );
+        }}
+        ListEmptyComponent={isLoading ? (
+          <ActivityIndicator accessibilityLabel={t("history.loading")} />
+        ) : error ? (
+          <Text accessibilityRole="alert" className="scanner-permission-error">
+            {t("history.loadError")}
+          </Text>
+        ) : (
+          <Text className="scan-detail-label text-center">{t("history.empty")}</Text>
+        )}
+      />
+    </GestureHandlerRootView>
   );
 }
