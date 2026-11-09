@@ -7,12 +7,14 @@ interface ScanRow {
   type: string;
 }
 
+type ScanDetailRow = ScanRow & { thumbnail_base64: string | null };
+
 export async function getScan(
   database: SQLiteDatabase,
   scanId: string
 ): Promise<Scan | null> {
-  const row = await database.getFirstAsync<ScanRow>(
-    "SELECT scanned_at, value, type FROM scans WHERE scanned_at = ?",
+  const row = await database.getFirstAsync<ScanDetailRow>(
+    "SELECT scanned_at, value, type, thumbnail_base64 FROM scans WHERE scanned_at = ?",
     scanId
   );
 
@@ -20,6 +22,7 @@ export async function getScan(
     value: row.value,
     type: row.type,
     scannedAt: new Date(row.scanned_at),
+    thumbnailBase64: row.thumbnail_base64 ?? undefined,
   } : null;
 }
 
@@ -40,11 +43,12 @@ export async function saveScan(
   scan: Scan
 ): Promise<void> {
   await database.runAsync(
-    `INSERT INTO scans (scanned_at, value, type)
-     VALUES (?, ?, ?)`,
+    `INSERT INTO scans (scanned_at, value, type, thumbnail_base64)
+     VALUES (?, ?, ?, ?)`,
     scan.scannedAt.toISOString(),
     scan.value,
-    scan.type
+    scan.type,
+    scan.thumbnailBase64 ?? null
   );
 }
 

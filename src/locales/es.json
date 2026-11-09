@@ -36,6 +36,7 @@
   },
   "detail": {
     "result": "Resultado",
+    "thumbnail": "Foto tomada al escanear el código",
     "loading": "Cargando los detalles del escaneo",
     "code": "Código",
     "copyCode": "Copiar código",

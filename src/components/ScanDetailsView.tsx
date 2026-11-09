@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { ActivityIndicator, Alert, Button, Platform, Pressable, ScrollView, Text, View, useColorScheme } from "react-native";
 import * as Clipboard from "expo-clipboard";
+import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -91,6 +92,17 @@ export default function ScanDetailsView({
             <ActivityIndicator accessibilityLabel={t("detail.loading")} />
           ) : scan ? (
             <>
+              {scan.thumbnailBase64 && (
+                <View className="bg-card" style={{ alignSelf: "center", borderRadius: 16, padding: 8 }}>
+                  <Image
+                    source={{ uri: `data:image/jpeg;base64,${scan.thumbnailBase64}` }}
+                    style={{ width: 144, height: 144, borderRadius: 8 }}
+                    contentFit="cover"
+                    contentPosition="center"
+                    accessibilityLabel={t("detail.thumbnail")}
+                  />
+                </View>
+              )}
               <View className="scan-detail-card">
                 <Text className="scan-detail-label">{t("detail.code")}</Text>
                 <View className="flex-row items-center gap-3">

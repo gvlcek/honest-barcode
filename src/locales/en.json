@@ -36,6 +36,7 @@
   },
   "detail": {
     "result": "Result",
+    "thumbnail": "Photo captured when the code was scanned",
     "loading": "Loading scan details",
     "code": "Code",
     "copyCode": "Copy code",

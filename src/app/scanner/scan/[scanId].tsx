@@ -1,14 +1,17 @@
+import { useContext } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useTranslation } from "react-i18next";
 import ScanDetailsView from "@/components/ScanDetailsView";
 import ScanDraftActions from "@/components/ScanDraftActions";
 import type { Scan } from "@/models/Scan";
+import { ScanDraftContext } from "@/models/ScanDraftContext";
 import { saveScan } from "@/repositories/scanRepository";
 
 export default function NewScanDetailScreen() {
   const { t } = useTranslation();
   const database = useSQLiteContext();
+  const { thumbnail, setThumbnail } = useContext(ScanDraftContext);
   const { scanId, value, barcodeType } = useLocalSearchParams<{
     scanId: string;
     value?: string;
@@ -18,10 +21,16 @@ export default function NewScanDetailScreen() {
   const scan: Scan | null =
     scannedAt && !Number.isNaN(scannedAt.getTime()) &&
     typeof value === "string" && typeof barcodeType === "string"
-      ? { value, type: barcodeType, scannedAt }
+      ? {
+          value,
+          type: barcodeType,
+          scannedAt,
+          thumbnailBase64: thumbnail?.scanId === scanId ? thumbnail.base64 : undefined,
+        }
       : null;
 
   const returnToScanner = () => {
+    setThumbnail(null);
     router.dismissTo("/scanner");
   };
 

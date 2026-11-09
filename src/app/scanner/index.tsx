@@ -1,15 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, AppState, Button, Linking, Text, View } from "react-native";
 import { router, Stack, useFocusEffect } from "expo-router";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as Haptics from "expo-haptics";
+import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
+import { File } from "expo-file-system";
 import ScannerGuide from "@/components/ScannerGuide";
 import type { BarcodeScanningResult } from "expo-camera";
-import type { Scan } from "@/models/Scan";
+import { ScanDraftContext } from "@/models/ScanDraftContext";
 import { useTranslation } from "react-i18next";
 
 const ScannerScreen = () => {
     const { t } = useTranslation();
+    const { setThumbnail } = useContext(ScanDraftContext);
     const [permission, requestPermission, getPermission] = useCameraPermissions();
     const [isRequesting, setIsRequesting] = useState(false);
     const [permissionError, setPermissionError] = useState<
@@ -17,18 +20,25 @@ const ScannerScreen = () => {
     >(null);
     const [cameraError, setCameraError] = useState(false);
     const [isScreenFocused, setIsScreenFocused] = useState(false);
-    const [isScanPaused, setIsScanPaused] = useState(false);
     const [isAppActive, setIsAppActive] = useState(AppState.currentState === "active");
     const didAutoRequest = useRef(false);
     const requestInFlight = useRef(false);
     const hasScanned = useRef(false);
+    const camera = useRef<CameraView | null>(null);
+    const cameraReady = useRef(false);
+    const scanSession = useRef(0);
+
+    const attachCamera = useCallback((view: CameraView | null) => {
+        camera.current = view;
+        cameraReady.current = false;
+    }, []);
 
     useFocusEffect(useCallback(() => {
         // A new reading session begins when returning from the draft detail.
         hasScanned.current = false;
-        setIsScanPaused(false);
         setIsScreenFocused(true);
         return () => {
+            scanSession.current += 1;
             hasScanned.current = true;
             setIsScreenFocused(false);
         };
@@ -86,27 +96,52 @@ const ScannerScreen = () => {
         }
     };
 
-    const handleBarcodeScanned = (result: BarcodeScanningResult) => {
-        if (hasScanned.current || !isScreenFocused || !isAppActive) return;
+    const handleBarcodeScanned = async (result: BarcodeScanningResult) => {
+        const view = camera.current;
+        if (hasScanned.current || !isScreenFocused || !isAppActive || !view || !cameraReady.current) return;
 
         hasScanned.current = true;
-        setIsScanPaused(true);
+        const session = scanSession.current;
+        const scanId = new Date().toISOString();
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {
             // Haptic feedback is optional and must not interrupt a scan.
         });
 
-        const scan: Scan = {
-            value: result.data,
-            type: result.type,
-            scannedAt: new Date(),
-        };
+        let base64: string | undefined;
+        try {
+            const photo = await view.takePictureAsync({ pictureRef: true });
+            if (session !== scanSession.current) return;
 
+            const cropSize = Math.min(photo.width, photo.height);
+            const thumbnail = await ImageManipulator.manipulate(photo)
+                .crop({
+                    originX: Math.floor((photo.width - cropSize) / 2),
+                    originY: Math.floor((photo.height - cropSize) / 2),
+                    width: cropSize,
+                    height: cropSize,
+                })
+                .resize({ width: 800, height: 800 })
+                .renderAsync();
+            const jpeg = await thumbnail.saveAsync({ format: SaveFormat.JPEG, compress: 0.8, base64: true });
+            base64 = jpeg.base64;
+            new File(jpeg.uri).delete();
+        } catch {
+            // The barcode remains usable if the photo or cache cleanup fails.
+        }
+
+        if (session !== scanSession.current) return;
+        if (AppState.currentState !== "active") {
+            hasScanned.current = false;
+            return;
+        }
+
+        setThumbnail(base64 ? { scanId, base64 } : null);
         router.push({
             pathname: "/scanner/scan/[scanId]",
             params: {
-                scanId: scan.scannedAt.toISOString(),
-                value: scan.value,
-                barcodeType: scan.type,
+                scanId,
+                value: result.data,
+                barcodeType: result.type,
             },
         });
     };
@@ -137,9 +172,11 @@ const ScannerScreen = () => {
                 ) : isScreenFocused && isAppActive ? (
                     <>
                     <CameraView
+                        ref={attachCamera}
                         style={{ flex: 1 }}
                         facing="back"
-                        onBarcodeScanned={isScanPaused ? undefined : handleBarcodeScanned}
+                        onCameraReady={() => { cameraReady.current = true; }}
+                        onBarcodeScanned={(result) => { void handleBarcodeScanned(result); }}
                         onMountError={() => {
                             setCameraError(true);
                         }}
